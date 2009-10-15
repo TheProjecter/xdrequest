@@ -1,7 +1,7 @@
 <html>
 	<head>
 		<!-- Include the xdRequest library -->
-		<script type="text/javascript" src="http://xdrequest.googlecode.com/svn/tags/0.1.0-alpha/xdRequest.js"></script>
+		<script type="text/javascript" src="xdRequest.js"></script>
 		<style type="text/css">
 			body {
 				font-family: helvetica,arial,sans-serif;
@@ -85,7 +85,9 @@
 		// That is where we parse the full page to display the schedule
 		xdr.get(
 			function(response) {
-				debug = response;
+				var team;
+				var schedule;
+				
 				// Obtain the team title from the response
 				team = response.html.match(/&lt;title&gt;([^-]*) -/)[1];
 				
@@ -123,7 +125,9 @@
 		// That is where we parse the full page to display the box score
 		xdr.get(
 			function(response) {
-				debug = response;
+				var title;
+				var boxscore;
+				
 				// Get the game title
 				title = response.html.match(/&lt;h1 class="game-title"&gt;(?:(?:(?!&lt;\/h1&gt;)[\s\S])*)&lt;\/h1&gt;/)[0];
 				
@@ -181,7 +185,9 @@
 				// That is where we parse the full page to display the schedule
 				xdr.get(
 					function(response) {
-						debug = response;
+						var team;
+						var schedule;
+						
 						// Obtain the team title from the response
 						team = response.html.match(/<title>([^-]*) -/)[1];
 						
@@ -219,7 +225,9 @@
 				// That is where we parse the full page to display the box score
 				xdr.get(
 					function(response) {
-						debug = response;
+						var title;
+						var boxscore;
+						
 						// Get the game title
 						title = response.html.match(/<h1 class="game-title">(?:(?:(?!<\/h1>)[\s\S])*)<\/h1>/)[0];
 						
