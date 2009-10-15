@@ -25,9 +25,9 @@ Alternatively, you can perform both of these actions at once by declaring the in
 
 Once you've created the new instance, you can interact with public methods and properties to send cross-domain requests.
 
-= Methods and Properties =
+= xdRequest Methods and Properties =
 
-== `setURL(url)` ==
+== Method: `setURL(url)` ==
 Set the URL you will be working with.
 
 It returns the `xdRequest` object itself, so you can chain other calls behind it.  For example:
@@ -35,7 +35,13 @@ It returns the `xdRequest` object itself, so you can chain other calls behind it
 	myVariable.setURL("http://www.example.com").get();
 </code>
 
-== `get(callback)` or `get(url, callback)` ==
+== Property: `post_body` ==
+Prior to making a call to the `post` method,the post_body must be set.  The `post_body` should be a well-formed POST body string.  For example, if a form contains 3 fields, the `post_post` body would need could be assigned as follows:
+<code>
+	myVariable.post_body = "var1=value1&var2=value2&var3=value3";
+</code>
+
+== Method: `get(callback)` or `get(url, callback)` ==
 Use the GET method to retrieve data from the set URL.  The `get` method can accept one or two parameters.
 
 If only one parameter is used, it must be a callback function.  The callback function can accept one argument, which will contain an object with the response.  If two parameters are used, the first is a URL to retrieve, and the second is the callback function with the response.
@@ -79,7 +85,10 @@ The response sent to the callback function contains the following properties and
  === `post_body` ===
  A `string` with the post body, if one was transmitted.
 
-== `header([name, value])` ==
+== Method: `post(callback)` or `post(url, callback)` ==
+The `post` method works exactly the same as the `get` method.  The only difference is that the `post` method requires the `post_body` to be assigned so that there is something to post to the remote page.
+
+== Method: `header([name, value])` ==
 This method adds a header to be transmitted to the `url` when the request is sent.  The `header` method accepts an array with a name/value pair.  The first value in the array is the `name`, the second is the `value`.  To transmit multiple headers, just make multiple calls to `header`.
 
 Just like the `setURL` method, `header` also returns the `xdRequest` object, which allows chaining commands together.  For example:
