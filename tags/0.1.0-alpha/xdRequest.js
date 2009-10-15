@@ -59,7 +59,7 @@ JSON.parse = JSON.parse || function (str) {
 xdRequest_callback_array = new Array();
 function xdRequest(inputURL) {
 	// Local "constants"
-	var remote_table_definition = "http://xdrequest.googlecode.com/svn/trunk/xdRequest.xml";
+	var remote_table_definition = "http://xdrequest.googlecode.com/svn/tags/0.1.0-alpha/xdRequest.xml";
 	var baseYQLURL = "https://query.yahooapis.com/v1/public/yql?format=json&debug=true&q=";
 	var baseYQLStatement = "USE '" + remote_table_definition + "' AS remote;";
 	
