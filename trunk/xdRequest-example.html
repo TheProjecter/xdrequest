@@ -264,7 +264,10 @@
 			
 			function toggleCode() {
 				see = "<a href=\"javascript:toggleCode();\">here to see</a>";
+				iesee = "<A href=\"javascript:toggleCode();\">here to see";
+				iesee2 = "<A href=\"javascript:toggleCode();\">here to see</A>";
 				hide = "<a href=\"javascript:toggleCode();\">here to hide</a>";
+				iehide = "<A href=\"javascript:toggleCode();\">here to hide</A>";
 				switch(document.getElementById("status").innerHTML) {
 					case see:
 						document.getElementById("js_code").style.display = "block";
@@ -274,6 +277,17 @@
 					case hide:
 						document.getElementById("js_code").style.display = "none";
 						document.getElementById("status").innerHTML = see;
+						break;
+						
+					case iesee:
+					case iesee2:
+						document.getElementById("js_code").style.display = "block";
+						document.getElementById("status").innerHTML = iehide;
+						break;
+						
+					case iehide:
+						document.getElementById("js_code").style.display = "none";
+						document.getElementById("status").innerHTML = iesee2;
 						break;
 				}
 			}
