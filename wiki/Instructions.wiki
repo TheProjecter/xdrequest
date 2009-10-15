@@ -35,12 +35,6 @@ It returns the `xdRequest` object itself, so you can chain other calls behind it
 	myVariable.setURL("http://www.example.com").get();
 </code>
 
-== Property: `post_body` ==
-Prior to making a call to the `post` method,the post_body must be set.  The `post_body` should be a well-formed POST body string.  For example, if a form contains 3 fields, the `post_post` body would need could be assigned as follows:
-<code>
-	myVariable.post_body = "var1=value1&var2=value2&var3=value3";
-</code>
-
 == Method: `get(callback)` or `get(url, callback)` ==
 Use the GET method to retrieve data from the set URL.  The `get` method can accept one or two parameters.
 
@@ -84,6 +78,12 @@ The response sent to the callback function contains the following properties and
  A `string` with an error message, if one was generated.
  === `post_body` ===
  A `string` with the post body, if one was transmitted.
+
+== Property: `post_body` ==
+Prior to making a call to the `post` method,the post_body must be set.  The `post_body` should be a well-formed POST body string.  For example, if a form contains 3 fields, the `post_post` body would need could be assigned as follows:
+<code>
+	myVariable.post_body = "var1=value1&var2=value2&var3=value3";
+</code>
 
 == Method: `post(callback)` or `post(url, callback)` ==
 The `post` method works exactly the same as the `get` method.  The only difference is that the `post` method requires the `post_body` to be assigned so that there is something to post to the remote page.
