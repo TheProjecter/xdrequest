@@ -36,9 +36,9 @@ It returns the `xdRequest` object itself, so you can chain other calls behind it
 </code>
 
 == `get(callback)` or `get(url, callback)` ==
-Use the GET method to retrieve data from the set URL.  The `callback` parameter must be a function.  The `callback` function can accept one or two parameters.
+Use the GET method to retrieve data from the set URL.  The `get` method can accept one or two parameters.
 
-If one parameter is used, it must be a callback function.  The callback function can accept one argument, which will contain an object with the response.  If two parameters are used, the first is a URL to retrieve, and the second is the callback function with the response.
+If only one parameter is used, it must be a callback function.  The callback function can accept one argument, which will contain an object with the response.  If two parameters are used, the first is a URL to retrieve, and the second is the callback function with the response.
 
 Example of using get with one parameter (just the callback). In this example, the callback is an anonymous function:
 
