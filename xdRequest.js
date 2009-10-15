@@ -148,8 +148,10 @@ function xdRequest(inputURL) {
 		if(cookies) {
 			var cookieString = "";
 			for(var cookie in cookies) {
-				if(cookies[cookie].match(url, this.secure())) {
-					cookieString += cookies[cookie].name + "=" + cookies[cookie].value + "; ";
+				if(cookie != "index") {
+					if(cookies[cookie].match(url, this.secure())) {
+						cookieString += cookies[cookie].name + "=" + cookies[cookie].value + "; ";
+					}
 				}
 			}
 			cookieString = cookieString.replace(/; $/, "");
@@ -232,8 +234,10 @@ function xdRequest(inputURL) {
 		if(cookies) {
 			var cookieString = "";
 			for(var cookie in cookies) {
-				if(cookies[cookie].match(url, this.secure())) {
-					cookieString += cookies[cookie].name + "=" + cookies[cookie].value + "; ";
+				if(cookie != "index") {
+					if(cookies[cookie].match(url, this.secure())) {
+						cookieString += cookies[cookie].name + "=" + cookies[cookie].value + "; ";
+					}
 				}
 			}
 			cookieString = cookieString.replace(/; $/, "");
@@ -278,9 +282,11 @@ function xdRequest(inputURL) {
 						// If we get a redirect, we need to perform a new get to the URL
 						if(response.query.results.result.status.match(/^3[\d]{2}/)) {
 							for(var header in response.query.results.result.response_headers) {
-								if(header == "location") {
-									var redirect = response.query.results.result.response_headers[header];
-									break;
+								if(header != "index") {
+									if(header == "location") {
+										var redirect = response.query.results.result.response_headers[header];
+										break;
+									}
 								}
 							}
 							self.get(redirect, callback);
@@ -359,13 +365,17 @@ function xdRequest(inputURL) {
 		}
 		// Add all the cookies
 		for(var newCookie in newCookieArray) {
-			self.addCookie(newCookieArray[newCookie]);
+			if(newCookie != "index") {
+				self.addCookie(newCookieArray[newCookie]);
+			}
 		}
 		
 		// Delete any expired cookies
 		for(var index in cookiejar) {
-			if (cookiejar[index].isExpired()) {
-				deleteCookie(index);
+			if(index != "index") {
+				if (cookiejar[index].isExpired()) {
+					deleteCookie(index);
+				}
 			}
 		}
 	}
@@ -410,14 +420,16 @@ function xdRequest(inputURL) {
 	// Method to get a cookie by name and value
 	function getCookie(name, value, returnIndex) {
 		for(var index in cookiejar) {
-			if(name == cookiejar[index].name && value == cookiejar[index].value) {
-				// Return the index, if that's what we wanted
-				if(returnIndex) {
-					return index;
-				}
-				// Otherwise, return the cookie itself
-				else {
-					return cookiejar[index];
+			if(index != "index") {
+				if(name == cookiejar[index].name && value == cookiejar[index].value) {
+					// Return the index, if that's what we wanted
+					if(returnIndex) {
+						return index;
+					}
+					// Otherwise, return the cookie itself
+					else {
+						return cookiejar[index];
+					}
 				}
 			}
 		}
@@ -453,14 +465,16 @@ function xdRequest(inputURL) {
 			var newInput;
 			if(hidden = inputs.join("").match(/<\s*input(?:(?:(?!type\s*=\s*['"]hidden['"])[^>])*)type\s*=\s*['"]hidden['"][^>]*>/ig)) {
 				for(var x in hidden) {
-					newInput = {};
-					if(hidden[x].match(/.*name\s*=\s*['"]([^'"]*)['"].*/)) {
-						newInput.name = hidden[x].match(/.*name\s*=\s*['"]([^'"]*)['"].*/)[1];
+					if(x != "index") {
+						newInput = {};
+						if(hidden[x].match(/.*name\s*=\s*['"]([^'"]*)['"].*/)) {
+							newInput.name = hidden[x].match(/.*name\s*=\s*['"]([^'"]*)['"].*/)[1];
+						}
+						if(hidden[x].match(/.*value\s*=\s*['"]([^'"]*)['"].*/)) {
+							newInput.value = hidden[x].match(/.*value\s*=\s*['"]([^'"]*)['"].*/)[1];
+						}
+						hidden[x] = newInput;
 					}
-					if(hidden[x].match(/.*value\s*=\s*['"]([^'"]*)['"].*/)) {
-						newInput.value = hidden[x].match(/.*value\s*=\s*['"]([^'"]*)['"].*/)[1];
-					}
-					hidden[x] = newInput;
 				}
 				return hidden;
 			}
@@ -484,14 +498,16 @@ function xdRequest(inputURL) {
 		var newInput;
 		if(inputs = this.html.match(/<\s*input[^>]*>/ig)) {
 			for(var x in inputs) {
-				newInput = {};
-				if(inputs[x].match(/.*name\s*=\s*['"]([^'"]*)['"].*/)) {
-					newInput.name = inputs[x].match(/.*name\s*=\s*['"]([^'"]*)['"].*/)[1];
+				if(x != "index") {
+					newInput = {};
+					if(inputs[x].match(/.*name\s*=\s*['"]([^'"]*)['"].*/)) {
+						newInput.name = inputs[x].match(/.*name\s*=\s*['"]([^'"]*)['"].*/)[1];
+					}
+					if(inputs[x].match(/.*value\s*=\s*['"]([^'"]*)['"].*/)) {
+						newInput.value = inputs[x].match(/.*value\s*=\s*['"]([^'"]*)['"].*/)[1]
+					}
+					inputs[x] = newInput;
 				}
-				if(inputs[x].match(/.*value\s*=\s*['"]([^'"]*)['"].*/)) {
-					newInput.value = inputs[x].match(/.*value\s*=\s*['"]([^'"]*)['"].*/)[1]
-				}
-				inputs[x] = newInput;
 			}
 			return inputs;
 		}
@@ -506,8 +522,10 @@ function xdRequest(inputURL) {
 		var inputs = this.getInputs();
 		if (inputs) {
 			for(var input in inputs) {
-				if (inputs[input].name == name) {
-					return inputs[input].value;
+				if(input != "index") {
+					if (inputs[input].name == name) {
+						return inputs[input].value;
+					}
 				}
 			}
 		}
@@ -587,29 +605,31 @@ function xdRequest_cookie(cookieString) {
 		this.value = cookieString.split(/;\s*/)[0].match(/^[^=]*=(.*)$/)[1];
 		var properties = cookieString.split(/;\s*/);
 		for(var property in properties) {
-			// Check to see if the property name has a "=" in it
-			// If it does, then it is a property with a value
-			if(properties[property].match(/^([^=]*)=/)) {
-				propertyName = properties[property].match(/^([^=]*)=/)[1];
-				propertyValue = properties[property].match(/^[^=]*=(.*)$/)[1];
-				switch(propertyName) {
-					case "domain":
-					case "Domain":
-						this.domain = propertyValue.replace(/"|'/g, "");
-						break;
-					
-					case "path":
-					case "Path":
-						this.path = propertyValue.replace(/"|'/g, "");
-						break;
-					
-					case "expires":
-					case "Expires":
-						this.expiration = Date.parse(propertyValue.replace(/"|'/g, ""));
-						break;
-					
-					default:
-						break;				
+			if(property != "index") {
+				// Check to see if the property name has a "=" in it
+				// If it does, then it is a property with a value
+				if(properties[property].match(/^([^=]*)=/)) {
+					propertyName = properties[property].match(/^([^=]*)=/)[1];
+					propertyValue = properties[property].match(/^[^=]*=(.*)$/)[1];
+					switch(propertyName) {
+						case "domain":
+						case "Domain":
+							this.domain = propertyValue.replace(/"|'/g, "");
+							break;
+						
+						case "path":
+						case "Path":
+							this.path = propertyValue.replace(/"|'/g, "");
+							break;
+						
+						case "expires":
+						case "Expires":
+							this.expiration = Date.parse(propertyValue.replace(/"|'/g, ""));
+							break;
+						
+						default:
+							break;				
+					}
 				}
 			}
 			// If it doesn't have a value, then it is a flag-type of property
