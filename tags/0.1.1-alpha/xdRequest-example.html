@@ -1,0 +1,299 @@
+<html>
+	<head>
+		<!-- Include the xdRequest library -->
+		<script type="text/javascript" src="xdRequest.js"></script>
+		<style type="text/css">
+			body {
+				font-family: helvetica,arial,sans-serif;
+			}
+			h5 {
+				
+			}			
+			.colhead {
+				
+			}
+			.oddrow {
+				
+			}
+			.evenrow {
+				
+			}
+			.greenfont {
+				
+			}
+			.redfont {
+				
+			}
+			img {
+				border: 0 none;
+			}
+			.team {
+			
+			}
+			.linescore {
+			
+			}
+			.gametitle {
+			
+			}
+			.ts {
+			
+			}
+			ul {
+				list-style: none;
+			}
+			#js_code {
+				display: none;
+			}
+		</style>
+	</head>
+	<body>
+		<h1>xdRequest Demo</h1>
+		The following is a demo of how xdRequest can be used to load cross-domain data.  
+		In this example, we are loading in footbal team schedules from espn.go.com.<br>
+		The code makes use of a single xdRequest JavaScript object.  There are two Javascript functions
+		that use the xdRequest object to obtain data:
+		<ul>
+			<li>
+				<strong><code>getTeamSchedule</code></strong><br>
+				This function accepts a single parameter (teamid) and obtains the team's football
+				schedule from http://espn.go.com/ncf/clubhouse?teamId=<code>teamid</code>.
+			</li>
+			<li>
+				<strong><code>getBoxScore</code></strong><br>
+				This function accepts a single parameter (gameid) and obtains the box score
+				from http://espn.go.com/ncf/recap?gameId=<code>gameid</code>.
+			</li>
+		</ul>
+		Click <span id="status"><a href="javascript:toggleCode();">here to see</span></a> the JavaScript code:
+		<pre id="js_code">
+			<code>
+	var debug;
+	// Create a global xdRequest object for loading team schedules from ESPN
+	var xdr = new xdRequest();
+	
+	// This function will load a team schedule by providing the team ID
+	function getTeamSchedule(teamid) {
+		// Display a loading message
+		document.getElementById("schedule").innerHTML = "Loading schedule for teamID " + teamid;
+		
+		// First, set the URL to the proper location
+		xdr.setURL("http://espn.go.com/ncf/clubhouse?teamId=" + teamid);
+		
+		// Perform the xdRequest.get to load the URL.
+		// The only parameter passed to the get method is the callback function
+		// That is where we parse the full page to display the schedule
+		xdr.get(
+			function(response) {
+				var team;
+				var schedule;
+				
+				// Obtain the team title from the response
+				team = response.html.match(/&lt;title&gt;([^-]*) -/)[1];
+				
+				// Obtain the schedule from the response
+				schedule = response.html.match(/&lt;div class="stathead"&gt;&lt;h5&gt;2009 Schedule\/Results&lt;\/h5&gt;&lt;\/div&gt;(?:(?:(?!&lt;\/table&gt;)[\s\S])*)&lt;\/table&gt;/)[0];
+				
+				// Remove the complete team schedule link
+				schedule = schedule.replace(/&lt;tr&gt;&lt;td colspan="4"(?:(?:(?!&lt;\/td&gt;)[\s\S])*)&lt;\/td&gt;/, "");
+				
+				// Replace the clubhouse links with links to obtain team schedules
+				schedule = fixClubHouseLinks(schedule);
+				
+				// Replace the game links with links to obtain the box score
+				schedule = fixGameLinks(schedule);
+				
+				// Remove preview links
+				schedule = schedule.replace(/&lt;a href="\/ncf\/preview[^&gt;]*&gt;([^&lt;]*)&lt;\/a&gt;/, "$1");
+				
+				// Output to the schedule div
+				document.getElementById("schedule").innerHTML = "&lt;h3&gt;" + team + "&lt;/h3&gt;" + schedule;
+			}
+		);				
+	}
+	
+	// This function will load a box score by the game ID
+	function getBoxScore(gameid) {
+		// Display a loading message
+		document.getElementById("schedule").innerHTML = "Loading box score for gameID " + gameid;
+		
+		// First, set the URL to the proper location
+		xdr.setURL("http://espn.go.com/ncf/recap?gameId=" + gameid);
+		
+		// Perform the xdRequest.get to load the URL.
+		// The only parameter passed to the get method is the callback function
+		// That is where we parse the full page to display the box score
+		xdr.get(
+			function(response) {
+				var title;
+				var boxscore;
+				
+				// Get the game title
+				title = response.html.match(/&lt;h1 class="game-title"&gt;(?:(?:(?!&lt;\/h1&gt;)[\s\S])*)&lt;\/h1&gt;/)[0];
+				
+				// Use an h4 instead of an h1
+				title = title.replace(/h3/g, "h4");
+				
+				// Fix the clubhouse links in the title
+				title = fixClubHouseLinks(title);
+				
+				// Obtain the schedule from the response
+				boxscore = response.html.match(/&lt;table cellspacing="0" class="linescore"&gt;(?:(?:(?!&lt;\/table&gt;)[\s\S])*)&lt;\/table&gt;/)[0];
+				
+				// Replace the clubhouse links with links to obtain team boxscores
+				boxscore = fixClubHouseLinks(boxscore);
+				
+				// Replace the game links with links to obtain the box score
+				boxscore = fixGameLinks(boxscore);
+				
+				// Output to the schedule div
+				document.getElementById("schedule").innerHTML = title + boxscore;
+			}
+		);				
+	}
+	
+	function fixClubHouseLinks(html) {
+		// Replace the clubhouse links with links to obtain team schedules
+		return html.replace(/href="(?:\/ncf\/)?clubhouse\?teamId=([^"]*)"/g, "href=\"javascript:getTeamSchedule(\$1\)\"");				
+	}
+	
+	function fixGameLinks(html) {
+		// Replace the clubhouse links with links to obtain team schedules
+		return html.replace(/href="\/ncf\/recap\?gameId=([^"]*)"/g, "href=\"javascript:getBoxScore(\$1\)\"");
+	}
+	
+	// Let's load in the schedule for the Gators to start things off
+	getTeamSchedule(57);
+			</code>
+		</pre>
+		<div id="schedule"></div>
+		<script>
+			var debug;
+			// Create a global xdRequest object for loading team schedules from ESPN
+			var xdr = new xdRequest();
+			
+			// This function will load a team schedule by providing the team ID
+			function getTeamSchedule(teamid) {
+				// Display a loading message
+				document.getElementById("schedule").innerHTML = "Loading schedule for teamID " + teamid;
+				
+				// First, set the URL to the proper location
+				xdr.setURL("http://espn.go.com/ncf/clubhouse?teamId=" + teamid);
+				
+				// Perform the xdRequest.get to load the URL.
+				// The only parameter passed to the get method is the callback function
+				// That is where we parse the full page to display the schedule
+				xdr.get(
+					function(response) {
+						var team;
+						var schedule;
+						
+						// Obtain the team title from the response
+						team = response.html.match(/<title>([^-]*) -/)[1];
+						
+						// Obtain the schedule from the response
+						schedule = response.html.match(/<div class="stathead"><h5>2009 Schedule\/Results<\/h5><\/div>(?:(?:(?!<\/table>)[\s\S])*)<\/table>/)[0];
+						
+						// Remove the complete team schedule link
+						schedule = schedule.replace(/<tr><td colspan="4"(?:(?:(?!<\/td>)[\s\S])*)<\/td>/, "");
+						
+						// Replace the clubhouse links with links to obtain team schedules
+						schedule = fixClubHouseLinks(schedule);
+						
+						// Replace the game links with links to obtain the box score
+						schedule = fixGameLinks(schedule);
+						
+						// Remove preview links
+						schedule = schedule.replace(/<a href="\/ncf\/preview[^>]*>([^<]*)<\/a>/, "$1");
+						
+						// Output to the schedule div
+						document.getElementById("schedule").innerHTML = "<h3>" + team + "</h3>" + schedule;
+					}
+				);				
+			}
+			
+			// This function will load a box score by the game ID
+			function getBoxScore(gameid) {
+				// Display a loading message
+				document.getElementById("schedule").innerHTML = "Loading box score for gameID " + gameid;
+				
+				// First, set the URL to the proper location
+				xdr.setURL("http://espn.go.com/ncf/recap?gameId=" + gameid);
+				
+				// Perform the xdRequest.get to load the URL.
+				// The only parameter passed to the get method is the callback function
+				// That is where we parse the full page to display the box score
+				xdr.get(
+					function(response) {
+						var title;
+						var boxscore;
+						
+						// Get the game title
+						title = response.html.match(/<h1 class="game-title">(?:(?:(?!<\/h1>)[\s\S])*)<\/h1>/)[0];
+						
+						// Use an h4 instead of an h1
+						title = title.replace(/h3/g, "h4");
+						
+						// Fix the clubhouse links in the title
+						title = fixClubHouseLinks(title);
+						
+						// Obtain the schedule from the response
+						boxscore = response.html.match(/<table cellspacing="0" class="linescore">(?:(?:(?!<\/table>)[\s\S])*)<\/table>/)[0];
+						
+						// Replace the clubhouse links with links to obtain team boxscores
+						boxscore = fixClubHouseLinks(boxscore);
+						
+						// Replace the game links with links to obtain the box score
+						boxscore = fixGameLinks(boxscore);
+						
+						// Output to the schedule div
+						document.getElementById("schedule").innerHTML = title + boxscore;
+					}
+				);				
+			}
+			
+			function fixClubHouseLinks(html) {
+				// Replace the clubhouse links with links to obtain team schedules
+				return html.replace(/href="(?:\/ncf\/)?clubhouse\?teamId=([^"]*)"/g, "href=\"javascript:getTeamSchedule(\$1\)\"");				
+			}
+			
+			function fixGameLinks(html) {
+				// Replace the clubhouse links with links to obtain team schedules
+				return html.replace(/href="\/ncf\/recap\?gameId=([^"]*)"/g, "href=\"javascript:getBoxScore(\$1\)\"");
+			}
+			
+			function toggleCode() {
+				see = "<a href=\"javascript:toggleCode();\">here to see</a>";
+				iesee = "<A href=\"javascript:toggleCode();\">here to see";
+				iesee2 = "<A href=\"javascript:toggleCode();\">here to see</A>";
+				hide = "<a href=\"javascript:toggleCode();\">here to hide</a>";
+				iehide = "<A href=\"javascript:toggleCode();\">here to hide</A>";
+				switch(document.getElementById("status").innerHTML) {
+					case see:
+						document.getElementById("js_code").style.display = "block";
+						document.getElementById("status").innerHTML = hide;
+						break;
+					
+					case hide:
+						document.getElementById("js_code").style.display = "none";
+						document.getElementById("status").innerHTML = see;
+						break;
+						
+					case iesee:
+					case iesee2:
+						document.getElementById("js_code").style.display = "block";
+						document.getElementById("status").innerHTML = iehide;
+						break;
+						
+					case iehide:
+						document.getElementById("js_code").style.display = "none";
+						document.getElementById("status").innerHTML = iesee2;
+						break;
+				}
+			}
+			
+			// Let's load in the schedule for the Gators to start things off
+			getTeamSchedule(57);
+		</script>
+	</body>
+</html>
