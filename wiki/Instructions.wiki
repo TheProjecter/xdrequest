@@ -35,6 +35,9 @@ It returns the `xdRequest` object itself, so you can chain other calls behind it
 	myVariable.setURL("http://www.example.com").get();
 </code>
 
+== Method: `getURL()` ==
+Returns the URL that the xdRequest that is currently being worked with.
+
 == Method: `get(callback)` or `get(url, callback)` ==
 Use the GET method to retrieve data from the set URL.  The `get` method can accept one or two parameters.
 
@@ -95,3 +98,6 @@ Just like the `setURL` method, `header` also returns the `xdRequest` object, whi
 <code>
 	myVariable.setURL("http://www.example.com").header("Referrer", "http://www.foo.com").header("User-Agent","Some user-agent browser string of your choice").get();
 </code>
+
+== Property: `post_hidden_fields` ==
+By default, xdRequest will automatically post hidden fields found on web forms.  To disable this functionality, set `post_hidden_fields` to false.
