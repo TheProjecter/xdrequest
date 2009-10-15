@@ -60,7 +60,7 @@ xdRequest_callback_array = new Array();
 function xdRequest(inputURL) {
 	// Local "constants"
 	var remote_table_definition = "http://xdrequest.googlecode.com/svn/trunk/xdRequest.xml";
-	var baseYQLURL = "https://query.yahooapis.com/v1/public/yql?format=json&q=";
+	var baseYQLURL = "https://query.yahooapis.com/v1/public/yql?format=json&debug=true&q=";
 	var baseYQLStatement = "USE '" + remote_table_definition + "' AS remote;";
 	
 	// public properties
@@ -104,6 +104,9 @@ function xdRequest(inputURL) {
 
 	// Get method
 	this.get = function(param1, param2) {
+		// This method takes up to two parameters
+		// If a single parameter is specified, it needs to be a callback function
+		// If two parameters are specified, the first needs to be a URL and the second a callback function
 		// If we have no parameters, we have a problem.  We at least need a callback function
 		if(!param1) {
 			throw "get method requires at least a callback function";
@@ -167,6 +170,10 @@ function xdRequest(inputURL) {
 	}
 	
 	this.post = function(param1, param2) {
+		// This method takes up to two parameters
+		// If a single parameter is specified, it needs to be a callback function
+		// If two parameters are specified, the first needs to be a URL and the second a callback function
+		// The post_body property must be set in order for this function to work
 		// If we have no parameters, we have a problem.  We at least need a callback function
 		if(!param1) {
 			throw "get method requires at least a callback function";
@@ -207,15 +214,20 @@ function xdRequest(inputURL) {
 		// Set everything up to make the YQL call
 		properties.method = "POST";
 		properties.postbody = self.post_body;
+
+		// Check to see if we should post hidden fields
 		if(self.post_hidden_fields) {
 			var hidden_fields = self.getHiddenFields();
 			var field;
-			for(field in hidden_fields) {
-				properties.postbody += "&" + hidden_fields[field].name + "=" + hidden_fields[field].value;
+			// Append the hidden fields to the post body, if we found any
+			if(hidden_fields) {
+				for(field in hidden_fields) {
+					properties.postbody += "&" + hidden_fields[field].name + "=" + hidden_fields[field].value;
+				}
 			}
 		}
 		
-		// Add the cookies to the headers
+		// Build the cookie header
 		var cookies = this.cookies();
 		if(cookies) {
 			var cookieString = "";
@@ -428,11 +440,6 @@ function xdRequest(inputURL) {
 		}
 	}
 	
-	// Set the input URL if it was specified on the creation of the object
-	if(inputURL) {
-		this.setURL(inputURL);
-	}
-	
 	// Get hidden form values from the html
 	this.getHiddenFields = function() {
 		if(!this.html) {
@@ -506,6 +513,11 @@ function xdRequest(inputURL) {
 		}
 		return false;
 	}
+
+	// Set the input URL if it was specified on the creation of the object
+	if(inputURL) {
+		this.setURL(inputURL);
+	}	
 }
 
 function xdRequest_cookie(cookieString) {
@@ -566,7 +578,7 @@ function xdRequest_cookie(cookieString) {
 	}
 	
 	// Constructor
-	this.create = function(cookieString) {
+	if(cookieString) {
 		var propertyName;
 		var propertyValue;
 		var self = this;
@@ -617,10 +629,5 @@ function xdRequest_cookie(cookieString) {
 			this.expiration = "session";
 		}
 		return self;
-	}
-	
-	// Build the cookie from the string, if one was passed in
-	if(cookieString) {
-		return this.create(cookieString);
 	}
 }
