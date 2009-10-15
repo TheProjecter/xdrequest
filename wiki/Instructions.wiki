@@ -1,0 +1,90 @@
+#labels Phase-Deploy
+#How to use xdRequest
+
+= Include the JavaScript File =
+
+xdRequest is very simple to use.  Just copy the xdRequest.js file somewhere on your server (or if you're feeling adventurous, link to the [http://xdrequest.googlecode.com/svn/trunk/xdRequest.js xdRequest.js file in the trunk]).  Then add a `script` tag to the source of the HTML page where you want to use it.  Here's the tag you would add to use the xdRequest in the trunk of the source code repository:
+<code>
+ <script type="text/javascript" src="http://xdrequest.googlecode.com/svn/trunk/xdRequest.js"></script>
+</code>
+
+
+= Declaring an Instance of the xdRequest Object =
+
+You can declare a new instance of the xdRequest object, just as you would any other JavaScript object:
+<code>
+ var myVariable = new xdRequest;
+</code>
+If you declare a new instance in this manner, you'll need to set the URL before you make any requests with the setURL method:
+<code>
+ myVariable.setURL("http://www.example.com");
+</code>
+Alternatively, you can perform both of these actions at once by declaring the instance with a parameter, indicating the URL that you will be working with:
+<code>
+ var myVariable = new xdRequest("http://www.example.com");
+</code>
+
+
+Once you've created the new instance, you can interact with public methods and properties to send cross-domain requests.
+
+= Methods and Properties =
+
+== `setURL(url)` ==
+Set the URL you will be working with.
+
+It returns the `xdRequest` object itself, so you can chain other calls behind it.  For example:
+<code>
+	myVariable.setURL("http://www.example.com").get();
+</code>
+
+== `get(callback)` or `get(url, callback)` ==
+Use the GET method to retrieve data from the set URL.  The `callback` parameter must be a function.  The `callback` function can accept one or two parameters.
+
+If one parameter is used, it must be a callback function.  The callback function can accept one argument, which will contain an object with the response.  If two parameters are used, the first is a URL to retrieve, and the second is the callback function with the response.
+
+Example of using get with one parameter (just the callback). In this example, the callback is an anonymous function:
+
+<code>
+	myVariable.get(
+		function(response) {
+			// Do something with the response here
+		}
+	);
+</code>
+
+The response sent to the callback function contains the following properties and values:
+ === `url` ===
+ A `string` with the URL requested.
+ === `status` ===
+ A `number` with the status code sent by the web server.
+ === `method` ===
+ A `string` with the method used to retrieve the data. (GET or POST)
+ === `html` ===
+ A `string` containing the HTML retrieved from the URL.
+ === `request_headers` ===
+ An `array` of arrays.  Each of the arrays within are name/value pairs of the headers transmitted to the web server.  For example, if you sent a `Referrer` header with the value `http://www.foo.com`, the `request_headers` property would be:
+<code>
+  request_headers : [
+	["Referrer", "http://www.foo.com"]
+  ]
+</code>
+
+ === `response_headers` ===
+ An `array` of arrays.  Each of the arrays within are name/value pairs of the headers received from the web server.  For example, if the server sent a `Content-Type` header with the value `text/html; charset=iso-8859-1`, the `response_headers` might look like:
+<code>
+  response_headers : [
+	["content-type", "text/html; charset=iso-8859-1"]
+  ]
+</code>
+ === `error` ===
+ A `string` with an error message, if one was generated.
+ === `post_body` ===
+ A `string` with the post body, if one was transmitted.
+
+== `header([name, value])` ==
+This method adds a header to be transmitted to the `url` when the request is sent.  The `header` method accepts an array with a name/value pair.  The first value in the array is the `name`, the second is the `value`.  To transmit multiple headers, just make multiple calls to `header`.
+
+Just like the `setURL` method, `header` also returns the `xdRequest` object, which allows chaining commands together.  For example:
+<code>
+	myVariable.setURL("http://www.example.com").header("Referrer", "http://www.foo.com").header("User-Agent","Some user-agent browser string of your choice").get();
+</code>
