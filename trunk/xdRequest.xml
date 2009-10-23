@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>  
 <!--
-    This file is part of xdRequest.
+    This file is part of xdRequest (http://code.google.com/p/xdrequest/).
 
     Foobar is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -17,7 +17,7 @@
 -->
 <table xmlns="http://query.yahooapis.com/v1/schema/table.xsd">  
 	<meta>  
-		<sampleQuery>select * from {table} where url='http://www.google.com' and parameters='{"Referrer", "http://geeklad.com/"}';</sampleQuery>  
+		<sampleQuery>SELECT * FROM {table} WHERE url='http://www.google.com' AND  parameters='{"headers": [["Referrer", "http://geeklad.com/"]]}';</sampleQuery>  
 	</meta>  
 	<bindings>  
 		<select itemPath="" produces="XML">  
