@@ -8,3 +8,4 @@ xdRequest performs all its magic via [http://developer.yahoo.com/yql/ YQL].  YQL
 There are limitations as to what xdRequest can do:
  * YQL honors *robots.txt* files, so if access to a URL is prohibited by the *robots.txt* you will not be able to retrieve the data with xdRequest.
  * Because xdRequest uses dynamic script tags, the client web browser will limit the length of the URL for the YQL request.  That means it probably won't be possible to submit large amounts of data to POST forms (i.e. perform document uploads to POST forms).  Problems may also arise if the remote site you are accessing has a very long URL.
+ * In its current state, YQL only retrieves the plain text response for the remote server.  If you request XML data, it will just simply return the response without parsing.
