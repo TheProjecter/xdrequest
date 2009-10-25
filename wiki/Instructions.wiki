@@ -1,4 +1,4 @@
-#labels Phase-Deploy
+#labels Phase-Deploy,Featured,Documentation
 = Include the JavaScript File =
 
 xdRequest is very simple to use.  Just copy the xdRequest.js file somewhere on your server (or you could link directly to the [http://xdrequest.googlecode.com/svn/trunk/xdRequest.js xdRequest.js download]).  Then add a `script` tag to the source of the HTML page where you want to use it.  Here's the tag you would add to use the xdRequest.js download file:
